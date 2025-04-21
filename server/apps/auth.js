@@ -30,32 +30,48 @@ authRouter.post("/register", async (req, res) => {
     }
 });
 
-authRouter.post("/login", async (req, res) => {
-    try {
-        const { username, password } = req.body;
+authRouter.post('/login', async (req, res) => {
+  try {
+    const user = await db.collection('users').findOne({
+      username: req.body.username,
+    })
 
-        const collection = db.collection("users");
-        const user = await collection.findOne({ username });
-
-        if (!user) {
-            return res.status(401).json({ error: "Invalid credentials" });
-        }
-
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-
-        if (!isPasswordValid) {
-            return res.status(401).json({ error: "Invalid credentials" });
-        }
-
-        const token = jwt.sign(
-            { id: user._id, username: user.username  }, process.env.SECRET_KEY, { expiresIn: "1h" });
-
-        res.status(200).json({ message: "Login successful" , token });
-    } catch (error) {
-        console.error("Login error:", error);
-        return res.status(500).json({ error: "Internal server error" });
+    if (!user) {
+      return res.status(404).json({
+        message: 'user not found',
+      })
     }
-});
+
+    const isValidPassword = await bcrypt.compare(
+      req.body.password,
+      user.password
+    )
+
+    if (!isValidPassword) {
+      return res.status(401).json({
+        message: 'Invalid username or password',
+      })
+    }
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        username: user.username,
+      },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: '900000',
+      }
+    )
+
+    return res.status(201).json({
+      message: 'login successfully',
+      token: token,
+    })
+  } catch (error) {
+    return res.status(500).json({ message: error.message })
+  }
+})
 
 
 export default authRouter;

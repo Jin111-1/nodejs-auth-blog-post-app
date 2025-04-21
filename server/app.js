@@ -5,6 +5,7 @@ import postRouter from "./apps/posts.js";
 import { client } from "./utils/db.js";
 import authRouter from "./apps/auth.js";
 import dotenv from "dotenv";
+import morgan from "morgan";
 
 async function init() {
   dotenv.config();
@@ -12,7 +13,7 @@ async function init() {
   const port = 4000;
 
   await client.connect();
-
+  app.use(morgan('dev')) 
   app.use(cors());
   app.use(bodyParser.json());
   app.use("/posts", postRouter);
