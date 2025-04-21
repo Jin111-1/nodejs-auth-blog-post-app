@@ -8,22 +8,13 @@ function RegisterPage() {
   const { register } = useAuth();
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = {
-      username,
-      firstName,
-      lastName,
-      password,
-    };
-    register(data)
-      .then(() => {
-        setUsername("");
-        setFirstName("");
-        setLastName("");
-        setPassword("");
-      })
-      .catch((error) => {
-        console.error("Registration failed:", error);
-      });
+    
+    register({
+      username: username,
+      password: password,
+      firstname: firstName,
+      lastname: lastName,
+    });
   };
 
   return (

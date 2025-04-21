@@ -31,8 +31,7 @@ function AuthProvider(props) {
   const register = async (data) => {
     try {
       const response = await axios.post("http://localhost:4000/register", data);
-      localStorage.setItem("token", response.data.token);
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       setState({
         ...state,

@@ -60,7 +60,7 @@ authRouter.post('/login', async (req, res) => {
       },
       process.env.SECRET_KEY,
       {
-        expiresIn: '900000',
+        expiresIn: '1h',
       }
     )
 
@@ -75,3 +75,4 @@ authRouter.post('/login', async (req, res) => {
 
 
 export default authRouter;
+
